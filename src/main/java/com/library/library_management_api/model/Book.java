@@ -20,15 +20,20 @@ public class Book {
 
     private int edition;
 
+    @Column(nullable = false, length = 20)
+    private String isbn;
+
     protected Book() {
     }
 
-    public Book( String title, String author, String publisher, int publicationYear, int edition) {
+    public Book( String title, String author, String publisher,
+                 int publicationYear, int edition, String isbn) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
         this.publicationYear = publicationYear;
         this.edition = edition;
+        this.isbn=isbn;
     }
 
     public Long getBookId() {
@@ -79,12 +84,14 @@ public class Book {
         this.edition = edition;
     }
 
-    public void updateDetails(String title,String author,String publisher,int publicationYear,int edition){
+    public void updateDetails(String title,String author,String publisher,
+                              int publicationYear,int edition,String isbn){
         this.title=title;
         this.author=author;
         this.publisher=publisher;
         this.publicationYear=publicationYear;
         this.edition=edition;
+        this.isbn=isbn;
     }
 
     @Override

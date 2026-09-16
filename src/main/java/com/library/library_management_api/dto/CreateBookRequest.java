@@ -23,6 +23,9 @@ public class CreateBookRequest {
     @Positive(message = "Edition must be greater than zero")
     private int edition;
 
+    @NotBlank(message = "ISBN is required")
+    private String isbn;
+
     public CreateBookRequest(){
 
     }
@@ -65,5 +68,13 @@ public class CreateBookRequest {
 
     public void setEdition(int edition) {
         this.edition = edition;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 }

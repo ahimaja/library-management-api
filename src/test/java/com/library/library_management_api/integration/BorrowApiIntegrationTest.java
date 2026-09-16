@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.ObjectMapper;
 
+import java.time.LocalDate;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -63,8 +65,8 @@ public class BorrowApiIntegrationTest {
     @BeforeEach
     void setUp(){
         member = memberRepository.save(new Member("John","john@gmail.com","0000000000"));
-        Book book = bookRepository.save(new Book("Test Title", "Test Author", "Test Publisher", 2010, 2));
-        bookRecord=bookRecordRepository.save(new BookRecord(book));
+        Book book = bookRepository.save(new Book("Test Title", "Test Author", "Test Publisher", 2010, 2,"1FB3KRB3BKETBKB"));
+        bookRecord=bookRecordRepository.save(new BookRecord(book, LocalDate.of(2026,8,7)));
 
         UserAccount userAccount = new UserAccount(
                 "employee@test.com",

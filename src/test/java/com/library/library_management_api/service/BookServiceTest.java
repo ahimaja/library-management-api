@@ -52,8 +52,9 @@ public class BookServiceTest {
         request.setPublisher("Test publisher");
         request.setPublicationYear(2010);
         request.setEdition(2);
-        when(bookRepository.existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEdition(
-                "Test Book","Test Author", "Test publisher",2010,2))
+        request.setIsbn("1FB3KRB3BKETBKB");
+        when(bookRepository.existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEditionAndIsbnIgnoreCase(
+                "Test Book","Test Author", "Test publisher",2010,2,"1FB3KRB3BKETBKB"))
                 .thenReturn(true);
         DuplicateBookException exception = assertThrows(DuplicateBookException.class,
                 ()->bookService.createBook(request));
@@ -69,8 +70,9 @@ public class BookServiceTest {
         request.setPublisher("Test publisher");
         request.setPublicationYear(2010);
         request.setEdition(2);
-        when(bookRepository.existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEdition(
-                "Test Book","Test Author", "Test publisher",2010,2))
+        request.setIsbn("1FB3KRB3BKETBKB");
+        when(bookRepository.existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEditionAndIsbnIgnoreCase(
+                "Test Book","Test Author", "Test publisher",2010,2,"1FB3KRB3BKETBKB"))
                 .thenReturn(false);
         when(bookRepository.save(any(Book.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -85,7 +87,7 @@ public class BookServiceTest {
 
     @Test
     void updateBook_shouldUpdateBook_whenRequestIsValid(){
-        Book book = new Book("Test Book","Test Author", "Test publisher",2010,2);
+        Book book = new Book("Test Book","Test Author", "Test publisher",2010,2,"1FB3KRB3BKETBKB");
         when(bookRepository.findById(1L))
                 .thenReturn(Optional.of(book));
         when(bookRepository.save(book))
@@ -96,6 +98,7 @@ public class BookServiceTest {
         request.setPublisher("Test publisher");
         request.setPublicationYear(2020);
         request.setEdition(3);
+        request.setIsbn("1FB3KRB3BKETBKB");
         BookResponse resultBook = bookService.updateBook(1L,request);
         assertEquals(2020, resultBook.publicationYear());
         assertEquals(3, resultBook.edition());

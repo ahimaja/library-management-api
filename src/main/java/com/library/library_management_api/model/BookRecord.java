@@ -2,6 +2,9 @@ package com.library.library_management_api.model;
 
 import com.library.library_management_api.exception.BookRecordNotAvailableException;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PastOrPresent;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name="book_records")
@@ -16,14 +19,20 @@ public class BookRecord {
     private Book book;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private BookRecordStatus status;
+
+    @Column(name="acquired_date",nullable = false)
+    @PastOrPresent
+    private LocalDate acquiredDate;
 
     protected BookRecord(){
 
     }
 
-    public BookRecord(Book book) {
+    public BookRecord(Book book,LocalDate acquiredDate) {
         this.book = book;
+        this.acquiredDate=acquiredDate;
         this.status=BookRecordStatus.AVAILABLE;
     }
 
@@ -39,6 +48,10 @@ public class BookRecord {
 
     public BookRecordStatus getStatus() {
         return status;
+    }
+
+    public LocalDate getAcquiredDate() {
+        return acquiredDate;
     }
 
     public void markAsIssued(){

@@ -251,8 +251,8 @@ public class BorrowServiceTest {
     @Test
     void getOverdueBorrowRecords_shouldReturnMappedOverdueResponses(){
         Member member1 = new Member("hima","hima@gmail.com","9191919191");
-        Book book = new Book("Sample Book","Sample Author","Sample Publisher",2011,2);
-        BookRecord bookRecord1 = new BookRecord(book);
+        Book book = new Book("Sample Book","Sample Author","Sample Publisher",2011,2,"1FB3KRB3BKETBKB");
+        BookRecord bookRecord1 = new BookRecord(book,TEST_DATE.minusDays(24));
         BorrowRecord borrowRecord=
                 new BorrowRecord(member1,bookRecord1,TEST_DATE.minusDays(20),TEST_DATE.minusDays(6));
         when(borrowRecordRepository.findByStatusAndDueDateBefore(BorrowStatus.ACTIVE,TEST_DATE))
@@ -270,8 +270,8 @@ public class BorrowServiceTest {
     @Test
     void getAllBorrowRecords_shouldReturnMappedBorrowRecordResponses(){
         Member member1 = new Member("hima","hima@gmail.com","9191919191");
-        Book book = new Book("Sample Book","Sample Author","Sample Publisher",2011,2);
-        BookRecord bookRecord1 = new BookRecord(book);
+        Book book = new Book("Sample Book","Sample Author","Sample Publisher",2011,2,"1FB3KRB3BKETBKB");
+        BookRecord bookRecord1 = new BookRecord(book,TEST_DATE.minusDays(25));
         BorrowRecord borrowRecord=
                 new BorrowRecord(member1,bookRecord1,TEST_DATE.minusDays(20),TEST_DATE.minusDays(6));
         borrowRecord.markAsReturned(TEST_DATE);
@@ -291,8 +291,8 @@ public class BorrowServiceTest {
     @Test
     void voidBorrowRecord_shouldVoidBorrowRecord_whenBorrowRecordIsActive(){
         Member member=mock(Member.class);
-        Book book = new Book("Sample Book","Sample Author","Sample Publisher",2011,2);
-        BookRecord bookRecord = new BookRecord(book);
+        Book book = new Book("Sample Book","Sample Author","Sample Publisher",2011,2,"1FB3KRB3BKETBKB");
+        BookRecord bookRecord = new BookRecord(book,TEST_DATE.minusDays(20));
         BorrowRecord borrowRecord =
                 new BorrowRecord(member,bookRecord,TEST_DATE,TEST_DATE.plusDays(14));
         when(borrowRecordRepository.findById(1L))

@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book,Long> {
 
-    boolean existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEdition
-            (String title, String author, String publisher, int publicationYear, int edition);
+    boolean existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEditionAndIsbnIgnoreCase
+            (String title, String author, String publisher, int publicationYear, int edition,String isbn);
 
     List<Book> findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrPublisherContainingIgnoreCase
             (String title,String author, String publisher);

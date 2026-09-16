@@ -18,10 +18,10 @@ public class BookRepositoryTest {
 
     @Test
     void existsByBookDetails_shouldReturnTrueIgnoringCase(){
-        Book book = new Book("Test Title", "Test Author", "Test Publisher", 2010, 2);
+        Book book = new Book("Test Title", "Test Author", "Test Publisher", 2010, 2,"1FB3KRB3BKETBKB");
         bookRepository.save(book);
-        boolean exists = bookRepository.existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEdition
-                ("Test Title", "Test Author", "Test Publisher", 2010, 2);
+        boolean exists = bookRepository.existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEditionAndIsbnIgnoreCase
+                ("Test Title", "Test Author", "Test Publisher", 2010, 2,"1FB3KRB3BKETBKB");
         assertTrue(exists);
     }
 }

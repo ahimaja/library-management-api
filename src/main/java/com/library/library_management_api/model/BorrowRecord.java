@@ -13,7 +13,7 @@ public class BorrowRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long borrowId;
+    private Long borrowId;
 
     @ManyToOne
     @JoinColumn(name = "member_id",nullable = false)
@@ -28,6 +28,7 @@ public class BorrowRecord {
     private LocalDate returnDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private BorrowStatus status;
 
     private String voidedBy;
@@ -46,7 +47,7 @@ public class BorrowRecord {
         this.status=BorrowStatus.ACTIVE;
     }
 
-    public long getBorrowId() {
+    public Long getBorrowId() {
         return borrowId;
     }
 

@@ -35,7 +35,7 @@ public class BorrowRecordRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        book = new Book("Test Title", "Test Author", "Test Publisher", 2010, 2);
+        book = new Book("Test Title", "Test Author", "Test Publisher", 2010, 2,"1FB3KRB3BKETBKB");
         bookRepository.save(book);
         member = new Member("Hima", "hima@gmail.com", "9191919191");
         memberRepository.save(member);
@@ -43,9 +43,9 @@ public class BorrowRecordRepositoryTest {
 
     @Test
     void findByStatusAndDueDateBefore_shouldOnlyReturnActiveOverdueRecords(){
-        BookRecord bookRecord1 = bookRecordRepository.save(new BookRecord(book));
-        BookRecord bookRecord2 = bookRecordRepository.save(new BookRecord(book));
-        BookRecord bookRecord3 = bookRecordRepository.save(new BookRecord(book));
+        BookRecord bookRecord1 = bookRecordRepository.save(new BookRecord(book,TEST_DATE.minusDays(60)));
+        BookRecord bookRecord2 = bookRecordRepository.save(new BookRecord(book,TEST_DATE.minusDays(60)));
+        BookRecord bookRecord3 = bookRecordRepository.save(new BookRecord(book,TEST_DATE.minusDays(60)));
 
         BorrowRecord overdueActive = new BorrowRecord(member,bookRecord1,TEST_DATE.minusDays(20),TEST_DATE.minusDays(6));
         borrowRecordRepository.save(overdueActive);

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +25,8 @@ import static org.mockito.Mockito.when;
 public class BookRecordServiceTest {
 
     private BookRecordService bookRecordService;
+
+    private final LocalDate TEST_DATE = LocalDate.of(2026,7,8);
 
     @Mock
     private BookRecordRepository bookRecordRepository;
@@ -38,13 +41,14 @@ public class BookRecordServiceTest {
 
     @Test
     void createBookRecord_shouldCreateRecord_whenBookIsAvailable(){
-        Book book = new Book("Test Book","Test Author","Test Publisher",2000,2);
+        Book book = new Book("Test Book","Test Author","Test Publisher",2000,2,"1FB3KRB3BKETBKB");
         when(bookService.getBookById(2L))
                 .thenReturn(book);
         when(bookRecordRepository.save(any(BookRecord.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
         CreateBookRecordRequest request= new CreateBookRecordRequest();
         request.setBookId(2L);
+        request.setAcquiredDate(TEST_DATE);
         BookRecordResponse resultBookRecordResponse = bookRecordService.createBookRecord(request);
         assertEquals(BookRecordStatus.AVAILABLE,resultBookRecordResponse.status());
         assertEquals("Test Book",resultBookRecordResponse.bookTitle());
@@ -62,8 +66,8 @@ public class BookRecordServiceTest {
 
     @Test
     void retireBookRecord_shouldRetireRecord_whenRecordIsAvailable(){
-        Book book = new Book("Test Book","Test Author","Test Publisher",2000,2);
-        BookRecord bookRecord=new BookRecord(book);
+        Book book = new Book("Test Book","Test Author","Test Publisher",2000,2,"1FB3KRB3BKETBKB");
+        BookRecord bookRecord=new BookRecord(book,TEST_DATE);
         when(bookRecordRepository.findById(3L))
                 .thenReturn(Optional.of(bookRecord));
         bookRecordService.retireBookRecord(3L);
@@ -73,8 +77,8 @@ public class BookRecordServiceTest {
 
     @Test
     void retireBookRecord_shouldThrowException_whenRecordIsIssued(){
-        Book book = new Book("Test Book","Test Author","Test Publisher",2000,2);
-        BookRecord bookRecord =new BookRecord(book);
+        Book book = new Book("Test Book","Test Author","Test Publisher",2000,2,"1FB3KRB3BKETBKB");
+        BookRecord bookRecord =new BookRecord(book,TEST_DATE);
         bookRecord.markAsIssued();
         when(bookRecordRepository.findById(3L))
                 .thenReturn(Optional.of(bookRecord));
@@ -86,8 +90,8 @@ public class BookRecordServiceTest {
 
     @Test
     void retireBookRecord_shouldThrowException_whenRecordIsAlreadyRetired(){
-        Book book = new Book("Test Book","Test Author","Test Publisher",2000,2);
-        BookRecord bookRecord =new BookRecord(book);
+        Book book = new Book("Test Book","Test Author","Test Publisher",2000,2,"1FB3KRB3BKETBKB");
+        BookRecord bookRecord =new BookRecord(book,TEST_DATE);
         bookRecord.markAsRetired();
         when(bookRecordRepository.findById(3L))
                 .thenReturn(Optional.of(bookRecord));

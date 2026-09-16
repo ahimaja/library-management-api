@@ -8,7 +8,6 @@ import com.library.library_management_api.exception.DuplicateBookException;
 import com.library.library_management_api.model.Book;
 import com.library.library_management_api.repository.BookRecordRepository;
 import com.library.library_management_api.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,11 +24,12 @@ public class BookService {
     }
 
     public BookResponse createBook(CreateBookRequest request){
-        boolean duplicateExists = bookRepository.existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEdition(
-                request.getTitle(),request.getAuthor(),request.getPublisher(),request.getPublicationYear(),request.getEdition());
+        boolean duplicateExists = bookRepository.existsByTitleIgnoreCaseAndAuthorIgnoreCaseAndPublisherIgnoreCaseAndPublicationYearAndEditionAndIsbnIgnoreCase(
+                request.getTitle(),request.getAuthor(),request.getPublisher(),request.getPublicationYear(),request.getEdition(),request.getIsbn());
         if(duplicateExists)
             throw new DuplicateBookException("This book already exists");
-        Book book=new Book(request.getTitle(),request.getAuthor(),request.getPublisher(),request.getPublicationYear(),request.getEdition());
+        Book book=new Book(request.getTitle(),request.getAuthor(),request.getPublisher(),
+                request.getPublicationYear(),request.getEdition(),request.getIsbn());
         Book savedBook = bookRepository.save(book);
         return toResponse(savedBook);
     }
@@ -66,7 +66,8 @@ public class BookService {
                 request.getAuthor(),
                 request.getPublisher(),
                 request.getPublicationYear(),
-                request.getEdition());
+                request.getEdition(),
+                request.getIsbn());
 
         Book updatedBook = bookRepository.save(existingBook);
         return toResponse(updatedBook);

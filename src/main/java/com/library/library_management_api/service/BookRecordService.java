@@ -25,7 +25,7 @@ public class BookRecordService {
 
     public BookRecordResponse createBookRecord(CreateBookRecordRequest request){
         Book book = bookService.getBookById(request.getBookId());
-        BookRecord bookRecord = new BookRecord(book);
+        BookRecord bookRecord = new BookRecord(book,request.getAcquiredDate());
         BookRecord savedBookRecord = bookRecordRepository.save(bookRecord);
         return toResponse(savedBookRecord);
     }
@@ -35,7 +35,8 @@ public class BookRecordService {
                 bookRecord.getBookRecordId(),
                 bookRecord.getBook().getBookId(),
                 bookRecord.getBook().getTitle(),
-                bookRecord.getStatus());
+                bookRecord.getStatus(),
+                bookRecord.getAcquiredDate());
     }
 
     public BookRecord getBookRecordById(Long bookRecordId){

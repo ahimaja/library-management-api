@@ -1,17 +1,17 @@
 package com.library.library_management_api.dto;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public class UpdateBookRequest {
-    @NotNull(message = "Title is required")
+    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotNull(message = "Author name is required")
+    @NotBlank(message = "Author name is required")
     private String author;
 
-    @NotNull(message = "Publisher is required")
+    @NotBlank(message = "Publisher is required")
     private String publisher;
 
     @Min(value = 1000,message = "Publication year must be at least 1000")
@@ -19,6 +19,9 @@ public class UpdateBookRequest {
 
     @Positive(message = "Edition must be greater than zero")
     private int edition;
+
+    @NotBlank(message = "ISBN is required")
+    private String isbn;
 
     public UpdateBookRequest(){
 
@@ -62,5 +65,13 @@ public class UpdateBookRequest {
 
     public void setEdition(int edition) {
         this.edition = edition;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 }

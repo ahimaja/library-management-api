@@ -83,7 +83,7 @@ public class Member {
     }
 
     public void recordFinePayment(long paymentAmount){
-        if(paymentAmount<0)
+        if(paymentAmount<=0)
             throw new IllegalArgumentException("Payment amount must be greater than zero");
         if(paymentAmount>outstandingFine)
             throw new IllegalArgumentException("Payment cannot exceed outstanding amount");
