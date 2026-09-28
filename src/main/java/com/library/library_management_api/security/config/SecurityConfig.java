@@ -50,6 +50,9 @@ public class SecurityConfig {
                         .requestMatchers("/auth/register", "/auth/login")
                         .permitAll()
 
+                        .requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html")
+                        .permitAll()
+
                         .requestMatchers(HttpMethod.GET,"/books/**","/book-records/**")
                         .hasAnyRole("MEMBER","EMPLOYEE","ADMIN")
 

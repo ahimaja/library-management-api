@@ -1,6 +1,7 @@
 package com.library.library_management_api.dto;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,12 +18,14 @@ public class CreateBookRequest {
     @NotBlank(message = "Publisher is required")
     private String publisher;
 
+    @Schema(example = "1954")
     @Min(value = 1000,message = "Publication year must be at least 1000")
     private int publicationYear;
 
     @Positive(message = "Edition must be greater than zero")
     private int edition;
 
+    @Schema(description = "ISBN of the book", example = "9780547928227")
     @NotBlank(message = "ISBN is required")
     private String isbn;
 
