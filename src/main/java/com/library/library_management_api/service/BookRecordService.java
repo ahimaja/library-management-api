@@ -55,6 +55,7 @@ public class BookRecordService {
     }
 
     public List<BookRecordResponse> getBookRecordsByBookId(Long bookId){
+        bookService.getBookById(bookId);
         return bookRecordRepository.findByBookBookId(bookId).stream()
                 .map(this::toResponse)
                 .toList();

@@ -21,7 +21,7 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Book Records", description = "Operations for managing physical copies of books")
 @ApiResponses({
-        @ApiResponse(responseCode = "400", description = "Authentication required or JWT is invalid")
+        @ApiResponse(responseCode = "401", description = "Authentication required or JWT is invalid")
 })
 public class BookRecordController {
 
@@ -36,7 +36,8 @@ public class BookRecordController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Book copy creation successful"),
             @ApiResponse(responseCode = "400", description = "Invalid copy creation request data"),
-            @ApiResponse(responseCode = "403", description = "User does not have the required role")
+            @ApiResponse(responseCode = "403", description = "User does not have the required role"),
+            @ApiResponse(responseCode = "404", description = "Book not found")
     })
     @PostMapping
     public ResponseEntity<BookRecordResponse> createBookRecord(@Valid @RequestBody CreateBookRecordRequest request){
@@ -54,32 +55,43 @@ public class BookRecordController {
         return ResponseEntity.ok(bookRecordService.getAllBookRecords());
     }
 
+
+
     @Operation(summary = "Get a book copy by entering the book record id",
             description = "Requires MEMBER, EMPLOYEE or ADMIN role" )
     @ApiResponses({
             @ApiResponse(responseCode = "200",
                     description = "Book copy with the specified book record id retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Book copy not found")
     })
     @GetMapping("/{id}")
     public ResponseEntity<BookRecordResponse> getBookRecordById(@PathVariable("id") Long bookRecordId){
         return ResponseEntity.ok(bookRecordService.getBookRecordResponseById(bookRecordId));
     }
 
+
+
     @Operation(summary = "Get all the physical copies of a particular book by entering its book id",
             description = "Requires MEMBER, EMPLOYEE or ADMIN role" )
     @ApiResponses({
             @ApiResponse(responseCode = "200",
                     description = "Book copies with the specified book id retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Book not found")
     })
     @GetMapping("/book/{id}")
     public ResponseEntity<List<BookRecordResponse>> getBookRecordsByBookId(@PathVariable("id") Long bookId){
         return ResponseEntity.ok(bookRecordService.getBookRecordsByBookId(bookId));
     }
 
+
+
     @Operation(summary = "Retire a Book copy",
-            description = "Retires a physical book copy. An issued copy cannot be retired. Requires MEMBER, EMPLOYEE or ADMIN role" )
+            description = "Retires a physical book copy. An issued copy cannot be retired. Requires EMPLOYEE or ADMIN role" )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "No content to retrieve"),
+            @ApiResponse(responseCode = "204", description = "Book retired successfully"),
+            @ApiResponse(responseCode = "403", description = "User does not have the required role"),
+            @ApiResponse(responseCode = "404", description = "Book copy not found"),
+            @ApiResponse(responseCode = "409", description = "Issued book copy cannot be retired")
     })
     @PatchMapping("/{id}/retire")
     public ResponseEntity<Void> retireBookRecord(@PathVariable("id") Long bookRecordId){

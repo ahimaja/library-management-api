@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.naming.AuthenticationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +47,12 @@ public class GlobalExceptionHandler {
     }
 
 
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiErrorResponse> handleAuthenticationException(AuthenticationException exception,
+                                                                          HttpServletRequest request){
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED,exception.getMessage(),request);
+    }
 
     @ExceptionHandler({
             BookNotFoundException.class,

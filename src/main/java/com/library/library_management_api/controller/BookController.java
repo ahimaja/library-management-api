@@ -39,7 +39,8 @@ public class BookController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Book created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid book data"),
-            @ApiResponse(responseCode = "403", description = "User does not have the required role")
+            @ApiResponse(responseCode = "403", description = "User does not have the required role"),
+            @ApiResponse(responseCode = "409", description = "Book already exists")
     })
     @PostMapping
     public ResponseEntity<BookResponse> createBook(@Valid @RequestBody CreateBookRequest request){
@@ -47,7 +48,6 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(creaatedBookResponse);
         //body() does two things: attaches the body and finishes building the response
     }
-
 
 
 
@@ -67,7 +67,8 @@ public class BookController {
     @Operation(summary = "Get a book by entering the book id",
             description = "Requires MEMBER, EMPLOYEE or ADMIN role" )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Book with the specified book id retrieved successfully")
+            @ApiResponse(responseCode = "200", description = "Book with the specified book id retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Book not found")
     })
     @GetMapping("/{bookId}")
     public ResponseEntity<BookResponse> getBookById(@PathVariable("bookId") Long bookId){
@@ -83,7 +84,8 @@ public class BookController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Book updated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid book data"),
-            @ApiResponse(responseCode = "403", description = "User does not have the required role")
+            @ApiResponse(responseCode = "403", description = "User does not have the required role"),
+            @ApiResponse(responseCode = "404", description = "Book not found")
     })
     @PutMapping("/{bookId}")
     public ResponseEntity<BookResponse> updateBook(@PathVariable("bookId") Long bookId,
@@ -97,7 +99,11 @@ public class BookController {
     @Operation(summary = "Delete an existing book",
             description = "Book having physical copies cannot be deleted. Requires EMPLOYEE or ADMIN role" )
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "No content to retrieve"),
+            @ApiResponse(responseCode = "204", description = "Book deleted successfully"),
+            @ApiResponse(responseCode = "403", description = "User does not have the required role"),
+            @ApiResponse(responseCode = "404", description = "Book not found"),
+            @ApiResponse(responseCode = "409", description = "Book cannot be deleted while its physical copies exist"),
+
     })
 
     @DeleteMapping("/{bookId}")
@@ -111,7 +117,7 @@ public class BookController {
 
 
     @Operation(summary = "Search for book/books by entering a keyword",
-            description = "Requires MEMBER or EMPLOYEE or ADMIN role" )
+            description = "Requires EMPLOYEE or ADMIN role" )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Search completed successfully"),
     })

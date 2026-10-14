@@ -2,6 +2,7 @@ package com.library.library_management_api.service;
 
 import com.library.library_management_api.dto.BookRecordResponse;
 import com.library.library_management_api.dto.CreateBookRecordRequest;
+import com.library.library_management_api.exception.BookNotFoundException;
 import com.library.library_management_api.exception.BookRecordNotFoundException;
 import com.library.library_management_api.model.Book;
 import com.library.library_management_api.model.BookRecord;
@@ -14,12 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookRecordServiceTest {
@@ -62,6 +63,47 @@ public class BookRecordServiceTest {
         BookRecordNotFoundException exception = assertThrows(BookRecordNotFoundException.class,
                 ()->bookRecordService.getBookRecordById(2L));
         assertEquals("Book Record not found with ID: 2",exception.getMessage());
+    }
+
+    @Test
+    void getBookRecordsByBookId_shouldReturnBookRecords_whenBookExists(){
+        Book book = new Book("Test Book","Test Author","Test publisher",
+                2011,2,"13NIUEH47BRCJ8FH");
+        BookRecord bookRecord = new BookRecord(book,TEST_DATE);
+        when(bookService.getBookById(2L))
+                .thenReturn(book);
+        when(bookRecordRepository.findByBookBookId(2L))
+                .thenReturn(List.of(bookRecord));
+        List<BookRecordResponse> bookRecordResponses = bookRecordService.getBookRecordsByBookId(2L);
+        assertEquals(1,bookRecordResponses.size());
+        assertEquals("Test Book",bookRecordResponses.getFirst().bookTitle());
+        verify(bookService).getBookById(2L);
+        verify(bookRecordRepository).findByBookBookId(2L);
+    }
+
+    @Test
+    void getBookRecordsByBookId_shouldReturnEmptyList_whenBookExistsButHasNoRecords(){
+        Book book = new Book("Test Book","Test Author","Test publisher",
+                2011,2,"13NIUEH47BRCJ8FH");
+        BookRecord bookRecord = new BookRecord(book,TEST_DATE);
+        when(bookService.getBookById(2L))
+                .thenReturn(book);
+        when(bookRecordRepository.findByBookBookId(2L))
+                .thenReturn(List.of());
+        List<BookRecordResponse> bookRecordResponses = bookRecordService.getBookRecordsByBookId(2L);
+        assertTrue(bookRecordResponses.isEmpty());
+        verify(bookService).getBookById(2L);
+        verify(bookRecordRepository).findByBookBookId(2L);
+    }
+
+    @Test
+    void getBookRecordsByBookId_shouldThrowException_whenBookDoesNotExist(){
+        when(bookService.getBookById(2L))
+                .thenThrow(new BookNotFoundException("Book not found with ID: 2"));
+        BookNotFoundException exception = assertThrows(BookNotFoundException.class,()->bookRecordService.getBookRecordsByBookId(2L));
+        assertEquals("Book not found with ID: 2",exception.getMessage());
+        verify(bookService).getBookById(2L);
+        verify(bookRecordRepository,never()).findByBookBookId(2L);
     }
 
     @Test
