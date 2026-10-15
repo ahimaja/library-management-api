@@ -110,11 +110,11 @@ public class BookRecordServiceTest {
     void retireBookRecord_shouldRetireRecord_whenRecordIsAvailable(){
         Book book = new Book("Test Book","Test Author","Test Publisher",2000,2,"1FB3KRB3BKETBKB");
         BookRecord bookRecord=new BookRecord(book,TEST_DATE);
-        when(bookRecordRepository.findById(3L))
+        when(bookRecordRepository.findByIdForUpdate(3L))
                 .thenReturn(Optional.of(bookRecord));
         bookRecordService.retireBookRecord(3L);
         assertEquals(BookRecordStatus.RETIRED,bookRecord.getStatus());
-        verify(bookRecordRepository).findById(3L);
+        verify(bookRecordRepository).findByIdForUpdate(3L);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class BookRecordServiceTest {
         Book book = new Book("Test Book","Test Author","Test Publisher",2000,2,"1FB3KRB3BKETBKB");
         BookRecord bookRecord =new BookRecord(book,TEST_DATE);
         bookRecord.markAsIssued();
-        when(bookRecordRepository.findById(3L))
+        when(bookRecordRepository.findByIdForUpdate(3L))
                 .thenReturn(Optional.of(bookRecord));
         IllegalStateException exception = assertThrows(IllegalStateException.class,
                 ()->bookRecordService.retireBookRecord(3L));
@@ -135,7 +135,7 @@ public class BookRecordServiceTest {
         Book book = new Book("Test Book","Test Author","Test Publisher",2000,2,"1FB3KRB3BKETBKB");
         BookRecord bookRecord =new BookRecord(book,TEST_DATE);
         bookRecord.markAsRetired();
-        when(bookRecordRepository.findById(3L))
+        when(bookRecordRepository.findByIdForUpdate(3L))
                 .thenReturn(Optional.of(bookRecord));
         IllegalStateException exception = assertThrows(IllegalStateException.class,
                 ()->bookRecordService.retireBookRecord(3L));

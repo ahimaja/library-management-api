@@ -49,6 +49,8 @@ public class BorrowController {
     }
 
 
+
+
     @GetMapping
     @Operation(summary = "Get all borrow records",
             description = "Retrieves all the borrowing records in the library. Requires EMPLOYEE or ADMIN role")
@@ -59,6 +61,7 @@ public class BorrowController {
     public ResponseEntity<List<BorrowRecordResponse>> getAllBorrowRecords(){
         return ResponseEntity.ok(borrowService.getAllBorrowRecords());
     }
+
 
 
 
@@ -76,6 +79,8 @@ public class BorrowController {
 
 
 
+
+
     @GetMapping("/member/{id}")
     @Operation(summary = "Get the borrow history of a member",
             description = "Retrieves all the borrowing records of a specific member. Requires EMPLOYEE or ADMIN role")
@@ -90,6 +95,8 @@ public class BorrowController {
 
 
 
+
+
     @GetMapping("/member/{id}/active")
     @Operation(summary = "Get all the active borrow records of a member",
             description = "Retrieves all the active borrowing records of a specific member. Requires EMPLOYEE or ADMIN role")
@@ -101,6 +108,8 @@ public class BorrowController {
     public ResponseEntity<List<BorrowRecordResponse>> getActiveBorrowsByMemberId(@PathVariable("id") Long memberId){
         return ResponseEntity.ok(borrowService.getActiveBorrowsByMemberId(memberId));
     }
+
+
 
 
 
@@ -120,6 +129,8 @@ public class BorrowController {
 
 
 
+
+
     @GetMapping("/overdue")
     @Operation(summary = "Get all the overdue borrow records",
             description = "Retrieves active borrowing records whose due dates have passed. Requires EMPLOYEE or ADMIN role")
@@ -130,6 +141,8 @@ public class BorrowController {
     public ResponseEntity<List<OverdueBorrowResponse>> getOverdueBorrowRecords(){
         return ResponseEntity.ok(borrowService.getOverdueBorrowRecords());
     }
+
+
 
 
 
@@ -154,6 +167,8 @@ public class BorrowController {
 
 
 
+
+
     @GetMapping("/me")
     @Operation(summary = "Get my borrowing history",
             description = "Retrieves the currently authenticated member's borrowing history. Requires MEMBER role")
@@ -166,6 +181,8 @@ public class BorrowController {
         Long memberId = userAccountService.getMemberIdForUser(email);
         return ResponseEntity.ok(borrowService.getBorrowHistoryByMemberId(memberId));
     }
+
+
 
 
 

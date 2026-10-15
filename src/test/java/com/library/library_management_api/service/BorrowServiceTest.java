@@ -61,7 +61,7 @@ public class BorrowServiceTest {
         //setting mock values for issueBook() method
         when(memberService.getMemberById(1L))
                 .thenReturn(member);
-        when(bookRecordService.getBookRecordById(5L))
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
                 .thenReturn(bookRecord);
         when(bookRecord.isAvailable())
                 .thenReturn(true);
@@ -106,7 +106,7 @@ public class BorrowServiceTest {
         BookRecord bookRecord = mock(BookRecord.class);
         when(memberService.getMemberById(1L))
                 .thenReturn(member);
-        when(bookRecordService.getBookRecordById(5L))
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
                 .thenReturn(bookRecord);
         when(bookRecord.isAvailable())
                 .thenReturn(false);
@@ -123,7 +123,7 @@ public class BorrowServiceTest {
         BookRecord bookRecord = mock(BookRecord.class);
         when(memberService.getMemberById(1L))
                 .thenReturn(member);
-        when(bookRecordService.getBookRecordById(5L))
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
                 .thenReturn(bookRecord);
         when(bookRecord.isAvailable())
                 .thenReturn(true);
@@ -144,7 +144,7 @@ public class BorrowServiceTest {
         BookRecord bookRecord = mock(BookRecord.class);
         when(memberService.getMemberById(1L))
                 .thenReturn(member);
-        when(bookRecordService.getBookRecordById(5L))
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
                 .thenReturn(bookRecord);
         when(bookRecord.isAvailable())
                 .thenReturn(true);
@@ -188,10 +188,14 @@ public class BorrowServiceTest {
                 new BorrowRecord(member,bookRecord,TEST_DATE.minusDays(5),TEST_DATE.plusDays(9));
         when(borrowRecordRepository.findById(1L))
                 .thenReturn(Optional.of(borrowRecord));
-        when(member.getMemberId())
-                .thenReturn(2L);
         when(bookRecord.getBookRecordId())
                 .thenReturn(5L);
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
+                .thenReturn(bookRecord);
+        when(borrowRecordRepository.findByIdForUpdate(1L))
+                .thenReturn(Optional.of(borrowRecord));
+        when(member.getMemberId())
+                .thenReturn(2L);
         BookReturnResponse response = borrowService.returnBook(1L);
         assertEquals(TEST_DATE,response.getReturnDate());
         assertEquals(TEST_DATE,borrowRecord.getReturnDate());
@@ -209,10 +213,14 @@ public class BorrowServiceTest {
                 new BorrowRecord(member,bookRecord,TEST_DATE.minusDays(20),TEST_DATE.minusDays(6));
         when(borrowRecordRepository.findById(1L))
                 .thenReturn(Optional.of(borrowRecord));
-        when(member.getMemberId())
-                .thenReturn(2L);
         when(bookRecord.getBookRecordId())
                 .thenReturn(5L);
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
+                .thenReturn(bookRecord);
+        when(borrowRecordRepository.findByIdForUpdate(1L))
+                .thenReturn(Optional.of(borrowRecord));
+        when(member.getMemberId())
+                .thenReturn(2L);
         BookReturnResponse response = borrowService.returnBook(1L);
         assertEquals(TEST_DATE,response.getReturnDate());
         assertEquals(TEST_DATE,borrowRecord.getReturnDate());
@@ -239,6 +247,12 @@ public class BorrowServiceTest {
                 new BorrowRecord(member,bookRecord,TEST_DATE.minusDays(20),TEST_DATE.minusDays(6));
         borrowRecord.markAsReturned(TEST_DATE.minusDays(4));
         when(borrowRecordRepository.findById(1L))
+                .thenReturn(Optional.of(borrowRecord));
+        when(bookRecord.getBookRecordId())
+                .thenReturn(5L);
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
+                .thenReturn(bookRecord);
+        when(borrowRecordRepository.findByIdForUpdate(1L))
                 .thenReturn(Optional.of(borrowRecord));
         BorrowRecordAlreadyReturnedException exception = assertThrows(BorrowRecordAlreadyReturnedException.class,
                 ()->borrowService.returnBook(1L));
@@ -297,6 +311,10 @@ public class BorrowServiceTest {
                 new BorrowRecord(member,bookRecord,TEST_DATE,TEST_DATE.plusDays(14));
         when(borrowRecordRepository.findById(1L))
                 .thenReturn(Optional.of(borrowRecord));
+        when(bookRecordService.getBookRecordByIdForUpdate(null))
+                .thenReturn(bookRecord);
+        when(borrowRecordRepository.findByIdForUpdate(1L))
+                .thenReturn(Optional.of(borrowRecord));
         borrowService.voidBorrowRecord(1L,TEST_VOIDED_BY,TEST_VOID_REASON);
         assertEquals(BorrowStatus.VOIDED,borrowRecord.getStatus());
         assertEquals(BookRecordStatus.AVAILABLE,bookRecord.getStatus());
@@ -315,6 +333,12 @@ public class BorrowServiceTest {
                 new BorrowRecord(member,bookRecord,TEST_DATE.minusDays(15),TEST_DATE.plusDays(1));
         borrowRecord.markAsReturned(TEST_DATE.minusDays(2));
         when(borrowRecordRepository.findById(1L))
+                .thenReturn(Optional.of(borrowRecord));
+        when(bookRecord.getBookRecordId())
+                .thenReturn(5L);
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
+                .thenReturn(bookRecord);
+        when(borrowRecordRepository.findByIdForUpdate(1L))
                 .thenReturn(Optional.of(borrowRecord));
         IllegalStateException exception = assertThrows(IllegalStateException.class,
                 ()->borrowService.voidBorrowRecord(1L,TEST_VOIDED_BY,TEST_VOID_REASON));
@@ -335,6 +359,12 @@ public class BorrowServiceTest {
                 new BorrowRecord(member,bookRecord,TEST_DATE.minusDays(15),TEST_DATE.plusDays(1));
         borrowRecord.markAsVoided(TEST_VOIDED_BY,TEST_VOID_REASON,TEST_DATE.atStartOfDay());
         when(borrowRecordRepository.findById(1L))
+                .thenReturn(Optional.of(borrowRecord));
+        when(bookRecord.getBookRecordId())
+                .thenReturn(5L);
+        when(bookRecordService.getBookRecordByIdForUpdate(5L))
+                .thenReturn(bookRecord);
+        when(borrowRecordRepository.findByIdForUpdate(1L))
                 .thenReturn(Optional.of(borrowRecord));
         IllegalStateException exception = assertThrows(IllegalStateException.class,
                 ()->borrowService.voidBorrowRecord(1L,TEST_VOIDED_BY,TEST_VOID_REASON));

@@ -55,7 +55,8 @@ public class AdminStaffController {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Staff account enabled successfully"),
             @ApiResponse(responseCode = "403", description = "Access denied. Only user with ADMIN role can access this end point"),
-            @ApiResponse(responseCode = "409", description = "User account not found or the account does not belong to staff ")
+            @ApiResponse(responseCode = "404", description = "User account not found"),
+            @ApiResponse(responseCode = "409", description = "User account does not belong to staff ")
     })
     @PatchMapping("/{id}/enable")
     public ResponseEntity<Void> enableStaffAccount(@PathVariable("id") Long userId){
@@ -72,7 +73,8 @@ public class AdminStaffController {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Staff account disabled successfully"),
             @ApiResponse(responseCode = "403", description = "Access denied. Only user with ADMIN role can access this end point"),
-            @ApiResponse(responseCode = "409", description = "User account not found or the account does not belong to staff or the account belongs to last enabled ADMIN")
+            @ApiResponse(responseCode = "404", description = "User account not found"),
+            @ApiResponse(responseCode = "409", description = "User account does not belong to staff or the account belongs to last enabled ADMIN")
     })
     @PatchMapping("/{id}/disable")
     public ResponseEntity<Void> disableStaffAccount(@PathVariable("id") Long userId){
@@ -99,7 +101,9 @@ public class AdminStaffController {
     @Operation(summary = "Get a staff account", description = "Retrieves the staff account by specifying the staff id. Requires ADMIN/EMPLOYEE role")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Staff account retrieved successfully"),
-            @ApiResponse(responseCode = "403", description = "Access denied. Only user with ADMIN role can access this end point")
+            @ApiResponse(responseCode = "403", description = "Access denied. Only user with ADMIN role can access this end point"),
+            @ApiResponse(responseCode = "404", description = "User account not found"),
+            @ApiResponse(responseCode = "409", description = "User account does not belong to staff")
     })
     @GetMapping("/{id}")
     public ResponseEntity<UserAccountResponse> getStaffAccountById(@PathVariable("id") Long userId){
@@ -114,7 +118,8 @@ public class AdminStaffController {
             @ApiResponse(responseCode = "201", description = "Staff role updated successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid staff role update request"),
             @ApiResponse(responseCode = "403", description = "Access denied. Only user with ADMIN role can access this end point"),
-            @ApiResponse(responseCode = "409", description = "User account not found or account is not staff or requested role is not permitted or the last enabled administrator cannot be demoted")
+            @ApiResponse(responseCode = "404", description = "User account not found"),
+            @ApiResponse(responseCode = "409", description = "Account is not staff or requested role is not permitted or the last enabled administrator cannot be demoted")
     })
     @PatchMapping("/{id}/role")
     public ResponseEntity<Void> updateStaffRole(@PathVariable("id") Long userId,

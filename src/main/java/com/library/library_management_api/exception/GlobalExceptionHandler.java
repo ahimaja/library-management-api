@@ -58,7 +58,8 @@ public class GlobalExceptionHandler {
             BookNotFoundException.class,
             MemberNotFoundException.class,
             BookRecordNotFoundException.class,
-            BorrowRecordNotFoundException.class
+            BorrowRecordNotFoundException.class,
+            UserAccountNotFoundException.class
     })
     public ResponseEntity<ApiErrorResponse> handleNotFound(RuntimeException exception,
                                                            HttpServletRequest request){

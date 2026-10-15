@@ -44,8 +44,15 @@ public class BookRecordService {
                 .orElseThrow(()->new BookRecordNotFoundException("Book Record not found with ID: "+bookRecordId));
     }
 
+
     public BookRecordResponse getBookRecordResponseById(Long bookRecordId){
         return toResponse(getBookRecordById(bookRecordId));
+    }
+
+
+    public BookRecord getBookRecordByIdForUpdate(Long bookRecordId){
+        return bookRecordRepository.findByIdForUpdate(bookRecordId)
+                .orElseThrow(()-> new BookRecordNotFoundException("Book Record not found with ID: "+bookRecordId));
     }
 
     public List<BookRecordResponse> getAllBookRecords(){
@@ -64,7 +71,7 @@ public class BookRecordService {
     @Transactional
     // with @Transactional , bookRecordRepository.save(bookRecord) can be skipped
     public void retireBookRecord(Long bookRecordId){
-        BookRecord bookRecord = getBookRecordById(bookRecordId);
+        BookRecord bookRecord = getBookRecordByIdForUpdate(bookRecordId);
         bookRecord.markAsRetired();
     }
 }

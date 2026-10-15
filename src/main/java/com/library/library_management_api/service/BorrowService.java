@@ -4,11 +4,9 @@ import com.library.library_management_api.dto.BookReturnResponse;
 import com.library.library_management_api.dto.BorrowRecordResponse;
 import com.library.library_management_api.dto.IssueBookRequest;
 import com.library.library_management_api.dto.OverdueBorrowResponse;
-import com.library.library_management_api.exception.BookRecordNotAvailableException;
-import com.library.library_management_api.exception.BorrowLimitExceededException;
-import com.library.library_management_api.exception.BorrowRecordNotFoundException;
-import com.library.library_management_api.exception.OutstandingFineException;
+import com.library.library_management_api.exception.*;
 import com.library.library_management_api.model.*;
+import com.library.library_management_api.repository.BookRecordRepository;
 import com.library.library_management_api.repository.BorrowRecordRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -43,7 +41,7 @@ public class BorrowService {
     @Transactional
     public BorrowRecordResponse issueBook(IssueBookRequest request){
         Member member = memberService.getMemberById(request.getMemberId());
-        BookRecord bookRecord = bookRecordService.getBookRecordById(request.getBookRecordId());
+        BookRecord bookRecord = bookRecordService.getBookRecordByIdForUpdate(request.getBookRecordId());
         if(!bookRecord.isAvailable())
             throw new BookRecordNotAvailableException("Book Record not available");
         if(member.getStatus()== MemberStatus.INACTIVE)
@@ -62,6 +60,8 @@ public class BorrowService {
         return toResponse(borrowRecord);
     }
 
+
+
     public BorrowRecordResponse toResponse(BorrowRecord borrowRecord){
         return new BorrowRecordResponse(borrowRecord.getBorrowId(),
                 borrowRecord.getMember().getMemberId(),
@@ -79,7 +79,7 @@ public class BorrowService {
 
     @Transactional
     public BookReturnResponse returnBook(Long borrowId){
-        BorrowRecord borrowRecord = getBorrowRecordById(borrowId);
+        BorrowRecord borrowRecord = getBorrowRecordByIdForUpdate(borrowId);
         LocalDate returnDate = LocalDate.now(clock);
         long fineCharged = borrowRecord.calculateFine(FINE_PER_DAY,returnDate);
         borrowRecord.markAsReturned(returnDate);
@@ -108,6 +108,16 @@ public class BorrowService {
         return borrowRecordRepository.findAll().stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    private BorrowRecord getBorrowRecordByIdForUpdate(Long borrowId){
+        BorrowRecord existingBorrowRecord = getBorrowRecordById(borrowId);
+        Long bookRecordId = existingBorrowRecord.getBookRecord().getBookRecordId();
+        //Locking the book record resource
+        bookRecordService.getBookRecordByIdForUpdate(bookRecordId);
+        //Locking the borrow record resource
+        return borrowRecordRepository.findByIdForUpdate(borrowId)
+                .orElseThrow(()->new BorrowRecordNotFoundException("Borrow Record not found with ID: "+borrowId));
     }
 
     public List<BorrowRecordResponse> getBorrowHistoryByMemberId(Long memberId){
@@ -145,7 +155,7 @@ public class BorrowService {
 
     @Transactional
     public void voidBorrowRecord(Long borrowId,String voidedBy, String voidReason){
-        BorrowRecord borrowRecord = getBorrowRecordById(borrowId);
+        BorrowRecord borrowRecord = getBorrowRecordByIdForUpdate(borrowId);
         LocalDateTime voidedAt = LocalDateTime.now(clock);
         borrowRecord.markAsVoided(voidedBy,voidReason,voidedAt);
         borrowRecord.getBookRecord().markAsAvailable();

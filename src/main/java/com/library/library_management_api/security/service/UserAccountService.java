@@ -1,5 +1,6 @@
 package com.library.library_management_api.security.service;
 
+import com.library.library_management_api.exception.UserAccountNotFoundException;
 import com.library.library_management_api.model.Member;
 import com.library.library_management_api.security.dto.CreateStaffRequest;
 import com.library.library_management_api.security.dto.RegisterMemberRequest;
@@ -72,7 +73,7 @@ public class UserAccountService {
 
     public Long getMemberIdForUser(String email){
         UserAccount userAccount = userAccountRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(()->new IllegalStateException("User account not found"));
+                .orElseThrow(()->new UserAccountNotFoundException("User account not found"));
 
         Member member = userAccount.getMember();
         if(member==null)
@@ -83,7 +84,7 @@ public class UserAccountService {
     @Transactional
     public void enableStaffAccount(Long userId){
         UserAccount userAccount = userAccountRepository.findById(userId)
-                .orElseThrow(()->new IllegalStateException("User account not found"));
+                .orElseThrow(()->new UserAccountNotFoundException("User account not found"));
         if(userAccount.getRole()==Role.MEMBER)
             throw new IllegalStateException("Member accounts cannot be managed through staff administration");
         userAccount.enable();
@@ -92,7 +93,7 @@ public class UserAccountService {
     @Transactional
     public void disableStaffAccount(Long userId) {
         UserAccount userAccount = userAccountRepository.findById(userId)
-                .orElseThrow(()->new IllegalStateException("User account not found"));
+                .orElseThrow(()->new UserAccountNotFoundException("User account not found"));
         if(userAccount.getRole()==Role.MEMBER)
             throw new IllegalStateException("Member accounts cannot be managed through staff administration");
         if(userAccount.getRole()==Role.ADMIN){
@@ -112,7 +113,7 @@ public class UserAccountService {
 
     public UserAccountResponse getStaffAccountById(Long userId) {
         UserAccount userAccount = userAccountRepository.findById(userId)
-                .orElseThrow(()->new IllegalStateException("User account not found"));
+                .orElseThrow(()->new UserAccountNotFoundException("User account not found"));
         if(userAccount.getRole()==Role.MEMBER)
             throw new IllegalStateException("User account is not a staff account");
         return toResponse(userAccount);
@@ -121,7 +122,7 @@ public class UserAccountService {
     @Transactional
     public void updateStaffRole(Long userId, Role newRole){
         UserAccount userAccount = userAccountRepository.findById(userId)
-                .orElseThrow(()->new IllegalStateException("User Account not found"));
+                .orElseThrow(()->new UserAccountNotFoundException("User Account not found"));
         if(userAccount.getRole()==Role.MEMBER)
             throw new IllegalStateException("Member accounts cannot be managed through staff administration");
         if(newRole==Role.MEMBER)
