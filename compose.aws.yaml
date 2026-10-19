@@ -1,0 +1,7 @@
+services:
+  postgres:
+    ports: !reset []
+    restart: unless-stopped
+
+  app:
+    restart: unless-stopped
